@@ -133,7 +133,7 @@ if __name__ == '__main__':
     state = np.reshape(state, [1, agent.state_size])
 
     # Filling up the replay-memory
-    for i in range(init_replay_memory_size):
+    for _ in range(init_replay_memory_size):
         action = agent.choose_action(state)
         next_state, reward, done, _ = env.step(action)
         next_state = np.reshape(next_state, [1, agent.state_size])

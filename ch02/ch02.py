@@ -354,7 +354,7 @@ class AdalineGD:
         self.b_ = np.float_(0.)
         self.losses_ = []
 
-        for i in range(self.n_iter):
+        for _ in range(self.n_iter):
             net_input = self.net_input(X)
             # Please note that the "activation" method has no effect
             # in the code since it is simply an identity function. We
@@ -365,10 +365,10 @@ class AdalineGD:
             # a sigmoid function to implement a logistic regression classifier.
             output = self.activation(net_input)
             errors = (y - output)
-            
+
             #for w_j in range(self.w_.shape[0]):
             #    self.w_[w_j] += self.eta * (2.0 * (X[:, w_j]*errors)).mean()
-            
+
             self.w_ += self.eta * 2.0 * X.T.dot(errors) / X.shape[0]
             self.b_ += self.eta * 2.0 * errors.mean()
             loss = (errors**2).mean()
@@ -509,12 +509,10 @@ class AdalineSGD:
         """
         self._initialize_weights(X.shape[1])
         self.losses_ = []
-        for i in range(self.n_iter):
+        for _ in range(self.n_iter):
             if self.shuffle:
                 X, y = self._shuffle(X, y)
-            losses = []
-            for xi, target in zip(X, y):
-                losses.append(self._update_weights(xi, target))
+            losses = [self._update_weights(xi, target) for xi, target in zip(X, y)]
             avg_loss = np.mean(losses)
             self.losses_.append(avg_loss)
         return self
@@ -548,8 +546,7 @@ class AdalineSGD:
         error = (target - output)
         self.w_ += self.eta * 2.0 * xi * (error)
         self.b_ += self.eta * 2.0 * error
-        loss = error**2
-        return loss
+        return error**2
     
     def net_input(self, X):
         """Calculate net input"""

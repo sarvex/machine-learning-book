@@ -116,8 +116,7 @@ class ExampleNet(torch.nn.Module):
         x = F.relu(self.conv2(x, edge_index, edge_attr))
         x = global_add_pool(x,batch)
         x = F.relu(self.fc_1(x))
-        output = self.out(x)
-        return output
+        return self.out(x)
 
 
 

@@ -5,7 +5,7 @@ if LooseVersion(sys.version) < LooseVersion('3.8'):
     print('[FAIL] We recommend Python 3.8 or newer but'
           ' found version %s' % (sys.version))
 else:
-    print('[OK] Your Python version is %s' % (sys.version))
+    print(f'[OK] Your Python version is {sys.version}')
 
 
 def get_packages(pkgs):

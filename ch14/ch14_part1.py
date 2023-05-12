@@ -120,10 +120,10 @@ def conv1d(x, w, p=0, s=1):
         zero_pad = np.zeros(shape=p)
         x_padded = np.concatenate(
             [zero_pad, x_padded, zero_pad])
-    res = []
-    for i in range(0, int((len(x_padded) - len(w_rot))) + 1, s):
-        res.append(np.sum(
-            x_padded[i:i+w_rot.shape[0]] * w_rot))
+    res = [
+        np.sum(x_padded[i : i + w_rot.shape[0]] * w_rot)
+        for i in range(0, int((len(x_padded) - len(w_rot))) + 1, s)
+    ]
     return np.array(res)
 
 
@@ -207,9 +207,9 @@ print('SciPy Results:\n',
 
 
 
- 
+
 img = read_image('example-image.png') 
- 
+
 print('Image shape:', img.shape)
 print('Number of channels:', img.shape[0])
 print('Image data type:', img.dtype)
@@ -231,11 +231,11 @@ loss = loss_func(torch.tensor([0.9]), torch.tensor([1.0]))
 l2_lambda = 0.001
 
 conv_layer = nn.Conv2d(in_channels=3, out_channels=5, kernel_size=5)
-l2_penalty = l2_lambda * sum([(p**2).sum() for p in conv_layer.parameters()])
+l2_penalty = l2_lambda * sum((p**2).sum() for p in conv_layer.parameters())
 loss_with_penalty = loss + l2_penalty
 
 linear_layer = nn.Linear(10, 16)
-l2_penalty = l2_lambda * sum([(p**2).sum() for p in linear_layer.parameters()])
+l2_penalty = l2_lambda * sum((p**2).sum() for p in linear_layer.parameters())
 loss_with_penalty = loss + l2_penalty
 
 
@@ -267,7 +267,7 @@ bce_logits_loss_fn = nn.BCEWithLogitsLoss()
 print(f'BCE (w Probas): {bce_loss_fn(probas, target):.4f}')
 print(f'BCE (w Logits): {bce_logits_loss_fn(logits, target):.4f}')
 
- 
+
 ####### Categorical Cross-entropy
 logits = torch.tensor([[1.5, 0.8, 2.1]])
 probas = torch.softmax(logits, dim=1)
@@ -300,7 +300,7 @@ mnist_dataset = torchvision.datasets.MNIST(root=image_path,
                                            transform=transform, 
                                            download=True)
 
-mnist_valid_dataset = Subset(mnist_dataset, torch.arange(10000)) 
+mnist_valid_dataset = Subset(mnist_dataset, torch.arange(10000))
 mnist_train_dataset = Subset(mnist_dataset, torch.arange(10000, len(mnist_dataset)))
 mnist_test_dataset = torchvision.datasets.MNIST(root=image_path, 
                                            train=False, 
@@ -344,10 +344,10 @@ valid_dl = DataLoader(mnist_valid_dataset, batch_size, shuffle=False)
 
 model = nn.Sequential()
 model.add_module('conv1', nn.Conv2d(in_channels=1, out_channels=32, kernel_size=5, padding=2))
-model.add_module('relu1', nn.ReLU())        
-model.add_module('pool1', nn.MaxPool2d(kernel_size=2))   
+model.add_module('relu1', nn.ReLU())
+model.add_module('pool1', nn.MaxPool2d(kernel_size=2))
 model.add_module('conv2', nn.Conv2d(in_channels=32, out_channels=64, kernel_size=5, padding=2))
-model.add_module('relu2', nn.ReLU())        
+model.add_module('relu2', nn.ReLU())
 model.add_module('pool2', nn.MaxPool2d(kernel_size=2))      
 
 x = torch.ones((4, 1, 28, 28))
@@ -364,8 +364,8 @@ model(x).shape
 
 
 
-model.add_module('fc1', nn.Linear(3136, 1024)) 
-model.add_module('relu3', nn.ReLU()) 
+model.add_module('fc1', nn.Linear(3136, 1024))
+model.add_module('relu3', nn.ReLU())
 model.add_module('dropout', nn.Dropout(p=0.5)) 
 
 model.add_module('fc2', nn.Linear(1024, 10)) 

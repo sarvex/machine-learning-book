@@ -11,7 +11,7 @@ import sklearn
 import sklearn.model_selection
 from torch.nn.functional import one_hot
 from torch.utils.data import DataLoader, TensorDataset
-import torchvision 
+import torchvision
 from torchvision import transforms 
 
 # # Machine Learning with PyTorch and Scikit-Learn  
@@ -109,14 +109,14 @@ for col_name in numeric_column_names:
     std  = train_stats.loc[col_name, 'std']
     df_train_norm.loc[:, col_name] = (df_train_norm.loc[:, col_name] - mean)/std
     df_test_norm.loc[:, col_name] = (df_test_norm.loc[:, col_name] - mean)/std
-    
+
 df_train_norm.tail()
 
 
 
 
 boundaries = torch.tensor([73, 76, 79])
- 
+
 v = torch.tensor(df_train_norm['Model Year'].values)
 df_train_norm['Model Year Bucketed'] = torch.bucketize(v, boundaries, right=True)
 
@@ -135,7 +135,7 @@ total_origin = len(set(df_train_norm['Origin']))
 origin_encoded = one_hot(torch.from_numpy(df_train_norm['Origin'].values) % total_origin)
 x_train_numeric = torch.tensor(df_train_norm[numeric_column_names].values)
 x_train = torch.cat([x_train_numeric, origin_encoded], 1).float()
- 
+
 origin_encoded = one_hot(torch.from_numpy(df_test_norm['Origin'].values) % total_origin)
 x_test_numeric = torch.tensor(df_test_norm[numeric_column_names].values)
 x_test = torch.cat([x_test_numeric, origin_encoded], 1).float()
@@ -165,8 +165,7 @@ input_size = x_train.shape[1]
 all_layers = []
 for hidden_unit in hidden_units:
     layer = nn.Linear(input_size, hidden_unit)
-    all_layers.append(layer)
-    all_layers.append(nn.ReLU())
+    all_layers.extend((layer, nn.ReLU()))
     input_size = hidden_unit
 
 all_layers.append(nn.Linear(hidden_units[-1], 1))
@@ -186,7 +185,7 @@ optimizer = torch.optim.SGD(model.parameters(), lr=0.001)
 
 torch.manual_seed(1)
 num_epochs = 200
-log_epochs = 20 
+log_epochs = 20
 for epoch in range(num_epochs):
     loss_hist_train = 0
     for x_batch, y_batch in train_dl:
@@ -198,7 +197,7 @@ for epoch in range(num_epochs):
         loss_hist_train += loss.item()
     if epoch % log_epochs==0:
         print(f'Epoch {epoch}  Loss {loss_hist_train/len(train_dl):.4f}')
- 
+
 
 
 
@@ -227,7 +226,7 @@ mnist_test_dataset = torchvision.datasets.MNIST(root=image_path,
                                            train=False, 
                                            transform=transform, 
                                            download=False)
- 
+
 batch_size = 64
 torch.manual_seed(1)
 train_dl = DataLoader(mnist_train_dataset, batch_size, shuffle=True)

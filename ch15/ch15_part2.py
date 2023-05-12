@@ -93,8 +93,7 @@ def tokenizer(text):
     text = re.sub('<[^>]*>', '', text)
     emoticons = re.findall('(?::|;|=)(?:-)?(?:\)|\(|D|P)', text.lower())
     text = re.sub('[\W]+', ' ', text.lower()) +        ' '.join(emoticons).replace('-', '')
-    tokenized = text.split()
-    return tokenized
+    return text.split()
 
 
 for label, line in train_dataset:
@@ -235,8 +234,7 @@ class RNN(nn.Module):
     def forward(self, x):
         _, hidden = self.rnn(x)
         out = hidden[-1, :, :]
-        out = self.fc(out)
-        return out
+        return self.fc(out)
 
 model = RNN(64, 32) 
 

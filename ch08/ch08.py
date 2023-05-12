@@ -501,11 +501,11 @@ print(f'Test Accuracy: {clf.score(X_test, y_test):.3f}')
 
 np.random.seed(0)
 np.set_printoptions(precision=6)
-y = [np.random.randint(3) for i in range(25)]
+y = [np.random.randint(3) for _ in range(25)]
 X = (y + np.random.randn(25)).reshape(-1, 1)
 
 cv5_idx = list(StratifiedKFold(n_splits=5, shuffle=False).split(X, y))
-    
+
 lr = LogisticRegression()
 cross_val_score(lr, X, y, cv=cv5_idx)
 
@@ -581,8 +581,7 @@ def tokenizer(text):
     text = re.sub('<[^>]*>', '', text)
     emoticons = re.findall('(?::|;|=)(?:-)?(?:\)|\(|D|P)', text.lower())
     text = re.sub('[\W]+', ' ', text.lower()) +        ' '.join(emoticons).replace('-', '')
-    tokenized = [w for w in text.split() if w not in stop]
-    return tokenized
+    return [w for w in text.split() if w not in stop]
 
 
 def stream_docs(path):

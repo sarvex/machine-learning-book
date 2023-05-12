@@ -37,23 +37,17 @@ class Agent:
 
     def choose_action(self, state):
         if np.random.uniform() < self.epsilon:
-            action = np.random.choice(self.env.nA)
-        else:
-            q_vals = self.q_table[state]
-            perm_actions = np.random.permutation(self.env.nA)
-            q_vals = [q_vals[a] for a in perm_actions]
-            perm_q_argmax = np.argmax(q_vals)
-            action = perm_actions[perm_q_argmax]
-        return action
+            return np.random.choice(self.env.nA)
+        q_vals = self.q_table[state]
+        perm_actions = np.random.permutation(self.env.nA)
+        q_vals = [q_vals[a] for a in perm_actions]
+        perm_q_argmax = np.argmax(q_vals)
+        return perm_actions[perm_q_argmax]
 
     def _learn(self, transition):
         s, a, r, next_s, done = transition
         q_val = self.q_table[s][a]
-        if done:
-            q_target = r
-        else:
-            q_target = r + self.gamma*np.max(self.q_table[next_s])
-
+        q_target = r if done else r + self.gamma*np.max(self.q_table[next_s])
         # Update the q_table
         self.q_table[s][a] += self.lr * (q_target - q_val)
 

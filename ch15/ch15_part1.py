@@ -129,15 +129,11 @@ for t in range(3):
     xt = torch.reshape(x_seq[t], (1, 5))
     print(f'Time step {t} =>')
     print('   Input           :', xt.numpy())
-    
-    ht = torch.matmul(xt, torch.transpose(w_xh, 0, 1)) + b_hh    
-    print('   Hidden          :', ht.detach().numpy())
-    
-    if t>0:
-        prev_h = out_man[t-1]
-    else:
-        prev_h = torch.zeros((ht.shape))
 
+    ht = torch.matmul(xt, torch.transpose(w_xh, 0, 1)) + b_hh
+    print('   Hidden          :', ht.detach().numpy())
+
+    prev_h = out_man[t-1] if t>0 else torch.zeros((ht.shape))
     ot = ht + torch.matmul(prev_h, torch.transpose(w_hh, 0, 1)) + b_hh
     ot = torch.tanh(ot)
     out_man.append(ot)

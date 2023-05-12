@@ -204,9 +204,8 @@ optim = torch.optim.Adam(model.parameters(), lr=5e-5)
 def compute_accuracy(model, data_loader, device):
     with torch.no_grad():
         correct_pred, num_examples = 0, 0
-        
-        for batch_idx, batch in enumerate(data_loader):
-        
+
+        for batch in data_loader:
         ### Prepare data
             input_ids = batch['input_ids'].to(device)
             attention_mask = batch['attention_mask'].to(device)
@@ -216,7 +215,7 @@ def compute_accuracy(model, data_loader, device):
             predicted_labels = torch.argmax(logits, 1)
             num_examples += labels.size(0)
             correct_pred += (predicted_labels == labels).sum()
-        
+
         return correct_pred.float()/num_examples * 100
 
 

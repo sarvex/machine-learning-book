@@ -343,7 +343,7 @@ class LogisticRegressionGD:
         self.b_ = np.float_(0.)
         self.losses_ = []
 
-        for i in range(self.n_iter):
+        for _ in range(self.n_iter):
             net_input = self.net_input(X)
             output = self.activation(net_input)
             errors = (y - output)

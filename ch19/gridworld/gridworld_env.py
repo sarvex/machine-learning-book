@@ -137,8 +137,6 @@ class GridWorldEnv(discrete.DiscreteEnv):
         self.viewer = rendering.Viewer(screen_width,
                                        screen_height)
 
-        all_objects = []
-
         # List of border points' coordinates
         bp_list = [
             (CELL_SIZE - MARGIN, CELL_SIZE - MARGIN),
@@ -149,13 +147,12 @@ class GridWorldEnv(discrete.DiscreteEnv):
         ]
         border = rendering.PolyLine(bp_list, True)
         border.set_linewidth(5)
-        all_objects.append(border)
-
+        all_objects = [border]
         # Vertical lines
         for col in range(self.num_cols + 1):
             x1, y1 = (col + 1) * CELL_SIZE, CELL_SIZE
             x2, y2 = (col + 1) * CELL_SIZE, \
-                     (self.num_rows + 1) * CELL_SIZE
+                         (self.num_rows + 1) * CELL_SIZE
             line = rendering.PolyLine([(x1, y1), (x2, y2)], False)
             all_objects.append(line)
 
@@ -163,7 +160,7 @@ class GridWorldEnv(discrete.DiscreteEnv):
         for row in range(self.num_rows + 1):
             x1, y1 = CELL_SIZE, (row + 1) * CELL_SIZE
             x2, y2 = (self.num_cols + 1) * CELL_SIZE, \
-                     (row + 1) * CELL_SIZE
+                         (row + 1) * CELL_SIZE
             line = rendering.PolyLine([(x1, y1), (x2, y2)], False)
             all_objects.append(line)
 
@@ -194,10 +191,7 @@ class GridWorldEnv(discrete.DiscreteEnv):
             self.viewer.add_geom(obj)
 
     def render(self, mode='human', done=False):
-        if done:
-            sleep_time = 1
-        else:
-            sleep_time = self.delay
+        sleep_time = 1 if done else self.delay
         x_coord = self.s % self.num_cols
         y_coord = self.s // self.num_cols
         x_coord = (x_coord + 0) * CELL_SIZE
@@ -216,7 +210,7 @@ class GridWorldEnv(discrete.DiscreteEnv):
 
 if __name__ == '__main__':
     env = GridWorldEnv(5, 6)
-    for i in range(1):
+    for _ in range(1):
         s = env.reset()
         env.render(mode='human', done=False)
 

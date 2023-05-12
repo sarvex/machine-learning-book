@@ -68,7 +68,7 @@ check_packages(d)
 ## Reading and processing text
 with open('1268-0.txt', 'r', encoding="utf8") as fp:
     text=fp.read()
-    
+
 start_indx = text.find('THE MYSTERIOUS ISLAND')
 end_indx = text.find('End of the Project Gutenberg')
 
@@ -101,7 +101,7 @@ print(text_encoded[15:21], ' == Reverse  ==> ', ''.join(char_array[text_encoded[
 
 
 for ex in text_encoded[:5]:
-    print('{} -> {}'.format(ex, char_array[ex]))
+    print(f'{ex} -> {char_array[ex]}')
 
 
 
@@ -282,16 +282,16 @@ def sample(model, starting_str,
     cell = cell.to('cpu')
     for c in range(len(starting_str)-1):
         _, hidden, cell = model(encoded_input[:, c].view(1), hidden, cell) 
-    
+
     last_char = encoded_input[:, -1]
-    for i in range(len_generated_text):
-        logits, hidden, cell = model(last_char.view(1), hidden, cell) 
+    for _ in range(len_generated_text):
+        logits, hidden, cell = model(last_char.view(1), hidden, cell)
         logits = torch.squeeze(logits, 0)
         scaled_logits = logits * scale_factor
         m = Categorical(logits=scaled_logits)
         last_char = m.sample()
         generated_str += str(char_array[last_char])
-        
+
     return generated_str
 
 torch.manual_seed(1)

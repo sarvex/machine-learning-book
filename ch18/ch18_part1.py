@@ -211,8 +211,7 @@ class BasicGraphConvolutionLayer(torch.nn.Module):
         potential_msgs = torch.mm(X, self.W2)
         propagated_msgs = torch.mm(A, potential_msgs)
         root_update = torch.mm(X, self.W1)
-        output = propagated_msgs + root_update + self.bias
-        return output
+        return propagated_msgs + root_update + self.bias
 
 
 # ### Adding a global pooling layer to deal with varying graph sizes
@@ -264,13 +263,7 @@ def collate_graphs(batch):
         g_size = adj.shape[0]
         batch_adj[accum:accum+g_size, accum:accum+g_size] = adj
         accum = accum + g_size
-    repr_and_label = {
-            'A': batch_adj, 
-            'X': feat_mats,
-            'y': labels,
-            'batch' : batch_mat}
-
-    return repr_and_label
+    return {'A': batch_adj, 'X': feat_mats, 'y': labels, 'batch': batch_mat}
 
 
 # ### Preparing the DataLoader
@@ -336,8 +329,7 @@ class ExampleDataset(Dataset):
         return len(self.graphs)
     
     def __getitem__(self,idx):
-        mol_rep = self.graphs[idx]
-        return mol_rep
+        return self.graphs[idx]
 
 
 
@@ -358,11 +350,7 @@ net = NodeNetwork(node_features)
 
 
 
-batch_results = []
-
-for b in loader:
-    batch_results.append(net(b['X'], b['A'], b['batch']).detach())
-
+batch_results = [net(b['X'], b['A'], b['batch']).detach() for b in loader]
 G1_rep = dset[1]
 G1_single = net(G1_rep['X'], G1_rep['A'], G1_rep['batch']).detach()
 

@@ -203,8 +203,7 @@ class MajorityVoteClassifier(BaseEstimator,
     def __init__(self, classifiers, vote='classlabel', weights=None):
 
         self.classifiers = classifiers
-        self.named_classifiers = {key: value for key, value
-                                  in _name_estimators(classifiers)}
+        self.named_classifiers = dict(_name_estimators(classifiers))
         self.vote = vote
         self.weights = weights
 
@@ -292,19 +291,17 @@ class MajorityVoteClassifier(BaseEstimator,
         """
         probas = np.asarray([clf.predict_proba(X)
                              for clf in self.classifiers_])
-        avg_proba = np.average(probas, axis=0, weights=self.weights)
-        return avg_proba
+        return np.average(probas, axis=0, weights=self.weights)
 
     def get_params(self, deep=True):
         """ Get classifier parameter names for GridSearch"""
         if not deep:
             return super().get_params(deep=False)
-        else:
-            out = self.named_classifiers.copy()
-            for name, step in self.named_classifiers.items():
-                for key, value in step.get_params(deep=True).items():
-                    out[f'{name}__{key}'] = value
-            return out
+        out = self.named_classifiers.copy()
+        for name, step in self.named_classifiers.items():
+            for key, value in step.get_params(deep=True).items():
+                out[f'{name}__{key}'] = value
+        return out
 
 
 

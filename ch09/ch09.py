@@ -221,7 +221,7 @@ class LinearRegressionGD:
         self.b_ = np.array([0.])
         self.losses_ = []
 
-        for i in range(self.n_iter):
+        for _ in range(self.n_iter):
             output = self.net_input(X)
             errors = (y - output)
             self.w_ += self.eta * 2.0 * X.T.dot(errors) / X.shape[0]

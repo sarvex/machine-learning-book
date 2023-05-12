@@ -319,18 +319,17 @@ def minibatch_generator(X, y, minibatch_size):
 
         
 # iterate over training epochs
-for i in range(num_epochs):
-
+for _ in range(num_epochs):
     # iterate over minibatches
     minibatch_gen = minibatch_generator(
         X_train, y_train, minibatch_size)
-    
+
     for X_train_mini, y_train_mini in minibatch_gen:
 
         break
-        
+
     break
-    
+
 print(X_train_mini.shape)
 print(y_train_mini.shape)
 

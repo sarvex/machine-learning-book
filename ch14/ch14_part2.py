@@ -415,9 +415,9 @@ with torch.no_grad():
         pred = model(x_batch)[:, 0]
         is_correct = ((pred>=0.5).float() == y_batch).float()
         accuracy_test += is_correct.sum().cpu()
- 
+
 accuracy_test /= len(test_dl.dataset)
-        
+
 print(f'Test accuracy: {accuracy_test:.4f}') 
 
 
@@ -428,12 +428,10 @@ pred = model(x_batch)[:, 0] * 100
 fig = plt.figure(figsize=(15, 7))
 for j in range(10, 20):
     ax = fig.add_subplot(2, 5, j-10+1)
-    ax.set_xticks([]); ax.set_yticks([])
+    ax.set_xticks([])
+    ax.set_yticks([])
     ax.imshow(x_batch[j].cpu().permute(1, 2, 0))
-    if y_batch[j] == 1:
-        label = 'Smile'
-    else:
-        label = 'Not Smile'
+    label = 'Smile' if y_batch[j] == 1 else 'Not Smile'
     ax.text(
         0.5, -0.15, 
         f'GT: {label:s}\nPr(Smile)={pred[j]:.0f}%', 
@@ -441,7 +439,7 @@ for j in range(10, 20):
         horizontalalignment='center',
         verticalalignment='center', 
         transform=ax.transAxes)
-    
+
 #plt.savefig('figures/figures-14_18.png', dpi=300)
 plt.show()
 

@@ -8,8 +8,8 @@ import torch
 import torch.nn as nn
 import numpy as np
 import matplotlib.pyplot as plt
-import torchvision 
-from torchvision import transforms 
+import torchvision
+from torchvision import transforms
 from torch.utils.data import DataLoader
 import itertools
 import math
@@ -113,10 +113,7 @@ check_packages(d)
 print(torch.__version__)
 print("GPU Available:", torch.cuda.is_available())
 
-if torch.cuda.is_available():
-    device = torch.device("cuda:0")
-else:
-    device = "cpu"
+device = torch.device("cuda:0") if torch.cuda.is_available() else "cpu"
 
 
 
@@ -399,14 +396,14 @@ torch.manual_seed(1)
 for epoch in range(1, num_epochs+1):           
     d_losses, g_losses = [], []
     d_vals_real, d_vals_fake = [], []
-    for i, (x, _) in enumerate(mnist_dl):
+    for x, _ in mnist_dl:
         d_loss, d_proba_real, d_proba_fake = d_train(x)
         d_losses.append(d_loss)
         g_losses.append(g_train(x))
-        
+
         d_vals_real.append(d_proba_real.mean().cpu())
         d_vals_fake.append(d_proba_fake.mean().cpu())
-        
+
     all_d_losses.append(torch.tensor(d_losses).mean())
     all_g_losses.append(torch.tensor(g_losses).mean())
     all_d_real.append(torch.tensor(d_vals_real).mean())
@@ -416,7 +413,7 @@ for epoch in range(1, num_epochs+1):
           f' [D-Real: {all_d_real[-1]:.4f} D-Fake: {all_d_fake[-1]:.4f}]')
     epoch_samples.append(
         create_samples(gen_model, fixed_z).detach().cpu().numpy())
- 
+
 
 
 
@@ -427,7 +424,7 @@ fig = plt.figure(figsize=(16, 6))
 
 ## Plotting the losses
 ax = fig.add_subplot(1, 2, 1)
- 
+
 plt.plot(all_g_losses, label='Generator loss')
 half_d_losses = [all_d_loss/2 for all_d_loss in all_d_losses]
 plt.plot(half_d_losses, label='Discriminator loss')
@@ -463,10 +460,10 @@ for i,e in enumerate(selected_epochs):
                 horizontalalignment='right',
                 verticalalignment='center', 
                 transform=ax.transAxes)
-        
+
         image = epoch_samples[e-1][j]
         ax.imshow(image, cmap='gray_r')
-    
+
 #plt.savefig('figures/ch17-vanila-gan-samples.pdf')
 plt.show()
 
@@ -499,15 +496,13 @@ def distance(X, Y, sqrt):
 
 
 
-def mmd(Mxx, Mxy, Myy, sigma) :
+def mmd(Mxx, Mxy, Myy, sigma):
     scale = Mxx.mean()
     Mxx = torch.exp(-Mxx/(scale*2*sigma*sigma))
     Mxy = torch.exp(-Mxy/(scale*2*sigma*sigma))
     Myy = torch.exp(-Myy/(scale*2*sigma*sigma))
     a = Mxx.mean()+Myy.mean()-2*Mxy.mean()
-    mmd = math.sqrt(max(a, 0))
-
-    return mmd
+    return math.sqrt(max(a, 0))
 
 
 

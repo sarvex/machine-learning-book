@@ -135,18 +135,17 @@ val_loader = DataLoader(
  
  
 def get_model(image_shape=(1, 28, 28), hidden_units=(32, 16)): 
-    input_size = image_shape[0] * image_shape[1] * image_shape[2] 
+    input_size = image_shape[0] * image_shape[1] * image_shape[2]
     all_layers = [nn.Flatten()]
     for hidden_unit in hidden_units: 
         layer = nn.Linear(input_size, hidden_unit) 
         all_layers.append(layer) 
         all_layers.append(nn.ReLU()) 
         input_size = hidden_unit 
- 
-    all_layers.append(nn.Linear(hidden_units[-1], 10)) 
-    all_layers.append(nn.Softmax(dim=1)) 
-    model = nn.Sequential(*all_layers)
-    return model 
+
+    all_layers.append(nn.Linear(hidden_units[-1], 10))
+    all_layers.append(nn.Softmax(dim=1))
+    return nn.Sequential(*all_layers) 
  
  
 device = "cuda" if torch.cuda.is_available() else "cpu"
